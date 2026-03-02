@@ -290,7 +290,6 @@
         tg.expand();
 
         const userId = tg.initDataUnsafe?.user?.id || 0;
-        const userFirstName = tg.initDataUnsafe?.user?.first_name || 'Пользователь';
         let currentBalance = 0.00;
 
         // Показать форму пополнения
@@ -324,8 +323,6 @@
             const data = JSON.stringify({
                 action: 'deposit_request',
                 user_id: userId,
-                username: tg.initDataUnsafe?.user?.username || '',
-                first_name: userFirstName,
                 amount: amount
             });
             
@@ -333,10 +330,10 @@
             
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             
-            // Закрываем Mini App и открываем диалог с ботом
+            // Закрываем Mini App - бот сам напишет в ЛС
             setTimeout(() => {
                 tg.close();
-            }, 500);
+            }, 300);
         }
 
         function withdraw() {
@@ -366,15 +363,12 @@
             if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
-        // Обновление баланса (вызывается при открытии)
+        // Обновление баланса
         function updateBalanceDisplay(amount) {
             currentBalance = amount;
             document.getElementById('balance').textContent = amount.toFixed(2);
             document.getElementById('balance2').textContent = amount.toFixed(2);
         }
-
-        // При загрузке запрашиваем баланс
-        tg.sendData(JSON.stringify({ action: 'get_balance', user_id: userId }));
     </script>
 </body>
 </html>
