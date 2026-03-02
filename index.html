@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mini App Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #1c1c1e);
+            color: var(--tg-theme-text-color, #ffffff);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--tg-theme-text-color, #ffffff);
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            margin-bottom: 30px;
+        }
+
+        .test-button {
+            background-color: var(--tg-theme-button-color, #007aff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 80%;
+            max-width: 280px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .test-button:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Тест Mini App</h1>
+        <p>Окно 9:16 внутри Telegram</p>
+        
+        <button class="test-button" onclick="handleClick()">
+            Нажми меня
+        </button>
+        
+        <div class="status" id="status">Ожидание...</div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        
+        // Сообщаем телеграму что приложение готово
+        tg.ready();
+        
+        // Разворачиваем на весь экран
+        tg.expand();
+        
+        // Адаптируем цвета под тему пользователя
+        if (tg.themeParams) {
+            document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#1c1c1e');
+            document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#007aff');
+            document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#8e8e93');
+        }
+
+        // Обработка нажатия кнопки
+        function handleClick() {
+            const status = document.getElementById('status');
+            status.textContent = '✅ Кнопка нажата!';
+            
+            // Отправляем данные боту (опционально)
+            tg.sendData('Кнопка нажата в Mini App!');
+            
+            // Вибрация (если поддерживается)
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+            
+            // Можно раскомментировать, чтобы закрывать после нажатия
+            // setTimeout(() => tg.close(), 500);
+        }
+
+        // Главное меню (кнопка внизу)
+        tg.MainButton.setText('ОТПРАВИТЬ ДАННЫЕ');
+        tg.MainButton.onClick(function() {
+            tg.sendData('Данные от Главной кнопки!');
+        });
+        tg.MainButton.show();
+    </script>
+</body>
+</html>
